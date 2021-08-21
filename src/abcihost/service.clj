@@ -127,6 +127,6 @@
               ;; chain-providers from pedestal.
               ::http/type protojure.pedestal/config
               ::http/chain-provider protojure.pedestal/provider
-
+              :io.pedestal.http/join :true
               ;;::http/host "localhost"
               ::http/port 26658})

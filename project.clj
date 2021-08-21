@@ -7,16 +7,17 @@
             :key "apache-2.0"}
   :dependencies [[org.clojure/clojure "1.10.3"]
                  [io.pedestal/pedestal.service "0.5.9"]
+                 [io.pedestal/pedestal.jetty "0.5.9"]
 
                  ;; -- PROTOC-GEN-CLOJURE --
                  [protojure "1.6.1"]
                  [protojure/google.protobuf "0.9.1"]
 
                  ;; -- PROTOC_GEN_CLOJURE CLIENT DEPS --
-                 [org.eclipse.jetty.http2/http2-client "11.0.5"]
-                 [org.eclipse.jetty/jetty-alpn-java-client "11.0.5"]
+                ;;  [org.eclipse.jetty.http2/http2-client "11.0.5"]
+                ;;  [org.eclipse.jetty/jetty-alpn-java-client "11.0.5"]
                  ;; -- Jetty Client Dep --
-                 [org.ow2.asm/asm "9.1"]
+                ;;  [org.ow2.asm/asm "9.1"]
 
                  ;; Include Undertow for supporting HTTP/2 for GRPCs
                  [io.undertow/undertow-core "2.2.8.Final"]
@@ -31,7 +32,11 @@
                  [org.slf4j/jul-to-slf4j "1.7.30"]
                  [org.slf4j/jcl-over-slf4j "1.7.30"]
                  [org.slf4j/log4j-over-slf4j "1.7.30"]
+
+                 ;; query server
+                 [org.clojure/core.async "1.3.618"]
                 ]
+  :jvm-opts ["-Xverify:none"]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
   :profiles {:dev {:aliases {"run-dev" ["trampoline" "run" "-m" "abcihost.server/run-dev"]}

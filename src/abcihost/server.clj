@@ -2,9 +2,11 @@
   (:gen-class) ; for -main method in uberjar
   (:require [io.pedestal.http :as server]
             [io.pedestal.http.route :as route]
-            [abcihost.service :as service]
+            [abcihost.service :as service] ;; abci host server
+            [abcihost.query :as query] ;; ledger query server
             [taoensso.timbre :as log]
-            [taoensso.timbre.appenders.core :as appenders]))
+            [taoensso.timbre.appenders.core :as appenders]
+            [clojure.core.async :as async]))
 
 (log/set-config! {:level :debug
                   :ns-whitelist  ["abcihost.*"]
@@ -13,6 +15,8 @@
 ;; This is an adapted service map, that can be started and stopped
 ;; From the REPL you can call server/start and server/stop on this service
 (defonce runnable-service (server/create-server service/service))
+;; (defonce runnable-service-query (async/thread (server/create-server query/service)))
+(defonce runnable-service-query (server/create-server query/service))
 
 (defn run-dev
   "The entry-point for 'lein run-dev'"
@@ -39,6 +43,8 @@
   "The entry-point for 'lein run'"
   [& args]
   (println "\nCreating your server...")
+  ;; (async/thread (server/start runnable-service)))
+  (async/go (server/start runnable-service-query))
   (server/start runnable-service))
 
 ;; If you package the service up as a WAR,
