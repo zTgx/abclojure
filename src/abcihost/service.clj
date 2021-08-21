@@ -37,13 +37,29 @@
 ;;
 ;; see http://pedestal.io/reference/request-map
 
+(defn mock-hash
+  []
+  (hash "1"))
 
+(defn info 
+  [request-info]
+  (ring-resp/response {
+    :data "data"
+    :version "xxx--version"
+    :app-version 3
+    :last-block-height 7
+    :last-block-app-hash (byte-array 11)
+  })
+  )
 (deftype ABCIApplication []
   server/Service
   (Info
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-     :body {:message (str "Info, " name)}})
+    [this params]
+    ;; [this {{:keys [name]} :grpc-params :as request}]
+    (println (str "version: " (:version (:grpc-params params))))
+    (info (:grpc-params params)))
+    ;; {:status 200
+    ;;  :body {:message (str "Info, " name)}})
   (Echo
     [this {{:keys [name]} :grpc-params :as request}]
     {:status 200

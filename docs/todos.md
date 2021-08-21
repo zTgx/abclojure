@@ -1,3 +1,4 @@
+- [ ] 9. more clojureize
 - [ ] 8. add test case (framwork) ?
 - [ ] 7. complete [abcihost] echo/info/.. callbacks.
 - [ ] 6. design query server apis
