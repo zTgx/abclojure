@@ -17,11 +17,18 @@
     (ring-resp/response (format "Clojure %s - served from %s"
                                 (clojure-version)
                                 (route/url-for ::about-page))))
-  
+
+(defn validators
+    [request]
+    ;; (ring-resp/response "Validators_List"))
+    (http/json-response {:msg "list"}))
+
 (def common-interceptors [(body-params/body-params) http/html-body])
+(def json-interceptors [(body-params/body-params) http/json-body])
 
 (def routes #{["/" :get (conj common-interceptors `home-page)]
-    ["/about" :get (conj common-interceptors `about-page)]})
+    ["/about" :get (conj common-interceptors `about-page)]
+    ["/validators" :get (conj json-interceptors `validators)]})
 
 (def service {:env :prod
     ::http/routes routes
