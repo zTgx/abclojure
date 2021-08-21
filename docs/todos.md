@@ -1,3 +1,4 @@
+- [ ] 10. fix Makefile
 - [ ] 9. more clojureize
 - [ ] 8. add test case (framwork) ?
 - [ ] 7. complete [abcihost] echo/info/.. callbacks.
