@@ -1,8 +1,9 @@
-- [ x ] complete [abcihost] echo/info/.. callbacks.
-- [ ] design query server apis
-- [ ] design comand line tools
-- [ ] daemon process???
-- [ ] write introduction 
-- [ ] write how-to 
-- [ ] re-rewrite READEME.md
-- [ ] add license MIT
+- [ ] 8. add test case (framwork) ?
+- [ ] 7. complete [abcihost] echo/info/.. callbacks.
+- [ ] 6. design query server apis
+- [ ] 5. design comand line tools
+- [ ] 4. daemon process???
+- [ ] 3. write introduction 
+- [ ] 2. write how-to 
+- [ ] 1. re-rewrite READEME.md
+- [ ] 0. add license MIT

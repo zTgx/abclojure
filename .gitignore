@@ -1,1 +1,12 @@
-target/
+classes
+pom.xml
+pom.xml.asc
+autodoc
+.lein-failures
+codox
+.lein-deps-sum
+.lein-env
+target
+checkouts
+.lein-repl-history
+.nrepl-port
