@@ -1,4 +1,4 @@
-(ns abcihost.query
+(ns app.service.query
     (:require [io.pedestal.http :as http]
               [io.pedestal.http.route :as route]
               [io.pedestal.http.body-params :as body-params]
@@ -10,7 +10,7 @@
 
 (defn home-page
 [request]
-(ring-resp/response "Hello from abcihost, backed by Protojure Template!"))
+(ring-resp/response "Hello from app, backed by Protojure Template!"))
 
 (defn about-page 
     [request]

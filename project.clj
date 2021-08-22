@@ -1,4 +1,4 @@
-(defproject abcihost "0.0.1-SNAPSHOT"
+(defproject abclojure "0.0.1-SNAPSHOT"
   :description "FIXME: write description"
   :url "http://example.com/FIXME"
   :license {:name "Apache License 2.0"
@@ -41,7 +41,7 @@
   :jvm-opts ["-Xverify:none"]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
-  :profiles {:dev {:aliases {"run-dev" ["trampoline" "run" "-m" "abcihost.server/run-dev"]}
+  :profiles {:dev {:aliases {"run-dev" ["trampoline" "run" "-m" "app.main/run-dev"]}
                    :dependencies [[io.pedestal/pedestal.service-tools "0.5.9"]]}
-             :uberjar {:aot [abcihost.server]}}
-  :main ^{:skip-aot true} abcihost.server)
+             :uberjar {:aot [app.main]}}
+  :main ^{:skip-aot true} app.main)
