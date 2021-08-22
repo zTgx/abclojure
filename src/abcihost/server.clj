@@ -6,7 +6,9 @@
             [abcihost.query :as query] ;; ledger query server
             [taoensso.timbre :as log]
             [taoensso.timbre.appenders.core :as appenders]
-            [clojure.core.async :as async]))
+            [clojure.core.async :as async]
+            [clojure.tools.cli :refer [parse-opts]]
+            [cmd.abc :as abc]))
 
 (log/set-config! {:level :debug
                   :ns-whitelist  ["abcihost.*"]
@@ -43,7 +45,7 @@
   "The entry-point for 'lein run'"
   [& args]
   (println "\nCreating your server...")
-  ;; (async/thread (server/start runnable-service)))
+  (parse-opts args abc/abc-options)
   (async/go (server/start runnable-service-query))
   (server/start runnable-service))
 

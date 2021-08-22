@@ -35,6 +35,8 @@
 
                  ;; query server
                  [org.clojure/core.async "1.3.618"]
+                ;; parse command line options
+                [org.clojure/tools.cli "1.0.206"]
                 ]
   :jvm-opts ["-Xverify:none"]
   :min-lein-version "2.0.0"
