@@ -41,6 +41,24 @@
   []
   (hash "1"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; init chain
+(defn init-chain
+  [request-init-chain]
+  (ring-resp/response {
+    ;; :consensus-params
+    :validators (22 33 44)
+    :app-hash (byte-array 3)
+  }))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; echo - info - query
+(defn echo 
+  [request-echo]
+  (ring-resp/response {
+    :message (:message request-echo)
+    }))
+
 (defn info 
   [request-info]
   (ring-resp/response {
@@ -50,20 +68,103 @@
     :last-block-height 7
     :last-block-app-hash (byte-array 11)
   }))
-
-(defn echo 
-  [request-echo]
+    
+(defn query 
+  []
   (ring-resp/response {
-    :message (:message request-echo)
-    }))
-
-(defn init-chain
-  [request-init-chain]
-  (ring-resp/response {
-    ;; :consensus-params
-    :validators (22 33 44)
-    :app-hash (byte-array 3)
+    :code 200
+    :info "query info"
   }))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; check tx -> mempool
+(defn check-tx 
+  []
+  (ring-resp/response {
+    :code 200
+    :data (byte-array 33)
+    :log "check-tx log"
+  }))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; begin -> deliver -> end -> commit
+(defn begin-block
+  [request-begin-block]
+  ;; (println (str "begin block : " (apply str (map char (:hash request-begin-block)))))
+  (println (str "last-commit-info : " (:last-commit-info request-begin-block)))
+  (ring-resp/response {
+    :events {
+      :type "begin-block-type"
+      :attributes {
+        :key "begin-block-key"
+        :value "begin-block-value"
+        :index false
+      }
+    } 
+  }))
+
+(defn deliver-tx 
+  []
+  (ring-resp/response {
+    :code 200
+    :info "deliver tx info"
+  }))
+
+(defn end-block
+  []
+  (ring-resp/response {
+    ;; :validator-updates 
+    ;; :consensus-param-updates
+    ;; :events 
+  }))
+
+(defn commit 
+  []
+  (ring-resp/response {
+    :retain-height 3
+    :data (byte-array 3)
+  }))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; snapshot
+(defn list-snapshots
+  []
+  (ring-resp/response {
+    :snapshot {
+      :height 7
+      :format 3
+      :chunks 3
+      :hash (hash 2)
+      :metadata (hash 3)
+    }
+  }))
+
+(defn load-snapshot-chunk
+  []
+  (ring-resp/response {
+    :chunk (byte-array 3)
+  }))
+
+(defn offer-snapshot
+  []
+  (ring-resp/response {
+    :result 3
+  }))
+
+(defn apply-snapshot-chunk
+  []
+  (ring-resp/response {
+    :refetch-chunks 3
+  }))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flush
+(defn abci-flush
+  []
+  (println "flushed, no return."))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; match protobuf Service
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (deftype ABCIApplication []
   server/Service
   (Info
@@ -76,61 +177,56 @@
     (println (str "request-echo-message " (:message (:grpc-params params))))
     (echo (:grpc-params params)))
 
+  (Query
+    [this params]
+    (query (:grpc-paarams params)))   
+    
   (InitChain
     [this params]
     (println (str "init chain " params))
     (init-chain (:grpc-params params)))
 
+  (BeginBlock
+    [this params]
+    (begin-block (:grpc-params params)))
+
   (CheckTx
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}})     
-     
-  (ListSnapshots
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}})     
-         
-  (EndBlock
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}})     
-      
-  (LoadSnapshotChunk
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}})
-  (Query
-  [this {{:keys [name]} :grpc-params :as request}]
-  {:status 200
-    :body {:message (str "Echo, " name)}})   
-  (Commit
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}})     
+    [this params]
+    (println (str "check-tx type : " (:type (:grpc-params params))))
+    (check-tx (:grpc-params params)))
       
   (DeliverTx
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}})     
-          
-  (Flush
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}})   
-     
+    [this params]
+    (deliver-tx (:grpc-params params)))  
+
+  (EndBlock
+    [this params]
+    (end-block (:grpc-params params)))
+
+  (Commit
+    [this params]
+    (commit (:grpc-params params)))     
+      
+  (ListSnapshots
+    [this params]
+    (list-snapshots (:grpc-params params)))     
+    
+  (LoadSnapshotChunk
+    [this params]
+    (load-snapshot-chunk (:grpc-params params)))
+
   (OfferSnapshot
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}})
+    [this params]
+    (offer-snapshot (:grpc-params params)))
+
   (ApplySnapshotChunk
-  [this {{:keys [name]} :grpc-params :as request}]
-  {:status 200
-    :body {:message (str "Echo, " name)}})   
-  (BeginBlock
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-      :body {:message (str "Echo, " name)}}))
+    [this params]
+    (apply-snapshot-chunk (:grpc-params params)))   
+    
+  (Flush
+    [this params]
+    (abci-flush (:grpc-params params))))  
+     
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
