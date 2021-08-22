@@ -12,15 +12,14 @@
             [tendermint.abci.ABCIApplication.server :as server]
             [tendermint.abci :as abci]))
 
-(defn home-page
-  [request]
-  (ring-resp/response "Hello from abcihost, backed by Protojure Template!"))
-  
-  (defn about-page 
-      [request]
-      (ring-resp/response (format "Clojure %s - served from %s"
-                                  (clojure-version)
-                                  (route/url-for ::about-page))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; keep a Tabular route 
+(defn route-test 
+    [request]
+    (ring-resp/response (format "Clojure %s - served from %s"
+                                (clojure-version)
+                                (route/url-for ::about-page))))
               
 ;; -- PROTOC-GEN-CLOJURE --
 ;; Implement our "Greeter" service interface.  The compiler generates
@@ -234,8 +233,7 @@
 (def common-interceptors [(body-params/body-params) http/html-body])
 
 ;; Tabular routes
-(def routes #{["/" :get (conj common-interceptors `home-page)]
-              ["/about" :get (conj common-interceptors `about-page)]})
+(def routes #{["/test" :get (conj common-interceptors `route-test)]})
 
 ;; -- PROTOC-GEN-CLOJURE --
 ;; Add the routes produced by Greeter->routes
