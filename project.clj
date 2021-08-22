@@ -38,7 +38,6 @@
                 ;; parse command line options
                 [org.clojure/tools.cli "1.0.206"]
                 ]
-  :jvm-opts ["-Xverify:none"]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]
   :profiles {:dev {:aliases {"run-dev" ["trampoline" "run" "-m" "app.main/run-dev"]}
