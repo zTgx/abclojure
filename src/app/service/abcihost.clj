@@ -1,3 +1,11 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; abcihost - service : tendermint abci host api service
+;;; default port: 26658
+;;; accept tendermint abci callbacks, including echo/info/check-tx/begin-block/deliver-tx/end-block/commit, etc
+;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (ns app.service.abcihost
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
