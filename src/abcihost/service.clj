@@ -12,16 +12,16 @@
             [tendermint.abci.ABCIApplication.server :as server]
             [tendermint.abci :as abci]))
 
-(defn about-page 
-  [request]
-  (ring-resp/response (format "Clojure %s - served from %s"
-                              (clojure-version)
-                              (route/url-for ::about-page))))
-
 (defn home-page
   [request]
   (ring-resp/response "Hello from abcihost, backed by Protojure Template!"))
-
+  
+  (defn about-page 
+      [request]
+      (ring-resp/response (format "Clojure %s - served from %s"
+                                  (clojure-version)
+                                  (route/url-for ::about-page))))
+              
 ;; -- PROTOC-GEN-CLOJURE --
 ;; Implement our "Greeter" service interface.  The compiler generates
 ;; a defprotocol (greeter/Service, in this case), and it is our job
@@ -49,25 +49,38 @@
     :app-version 3
     :last-block-height 7
     :last-block-app-hash (byte-array 11)
-  })
-  )
+  }))
+
+(defn echo 
+  [request-echo]
+  (ring-resp/response {
+    :message (:message request-echo)
+    }))
+
+(defn init-chain
+  [request-init-chain]
+  (ring-resp/response {
+    ;; :consensus-params
+    :validators (22 33 44)
+    :app-hash (byte-array 3)
+  }))
 (deftype ABCIApplication []
   server/Service
   (Info
     [this params]
-    ;; [this {{:keys [name]} :grpc-params :as request}]
     (println (str "version: " (:version (:grpc-params params))))
     (info (:grpc-params params)))
-    ;; {:status 200
-    ;;  :body {:message (str "Info, " name)}})
+
   (Echo
-    [this {{:keys [name]} :grpc-params :as request}]
-    {:status 200
-     :body {:message (str "Echo, " name)}})
+    [this params]
+    (println (str "request-echo-message " (:message (:grpc-params params))))
+    (echo (:grpc-params params)))
+
   (InitChain
-  [this {{:keys [name]} :grpc-params :as request}]
-  {:status 200
-    :body {:message (str "Echo, " name)}})   
+    [this params]
+    (println (str "init chain " params))
+    (init-chain (:grpc-params params)))
+
   (CheckTx
     [this {{:keys [name]} :grpc-params :as request}]
     {:status 200
