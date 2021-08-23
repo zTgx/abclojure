@@ -288,7 +288,8 @@
   (Echo
     [this params]
     (println (str "request-echo-message " (:message (:grpc-params params))))
-    (echo (:grpc-params params)))
+    (echo (-> params :grpc-params)))
+    ;; (echo (:grpc-params params)))
 
   (Query
     [this params]
