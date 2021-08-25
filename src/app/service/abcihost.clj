@@ -23,7 +23,10 @@
             ;; [com.example.addressbook.Greeter.server :as greeter]
             ;; [com.example.addressbook :as addressbook]
             [tendermint.abci.ABCIApplication.server :as server]
-            [tendermint.abci :as abci]))
+            [tendermint.abci :as abci]
+            
+            [ledger.ledger :as ledger]
+            ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; keep a Tabular route 
@@ -62,8 +65,8 @@
   [request-init-chain]
   (ring-resp/response {
     ;; :consensus-params
-    :validators (22 33 44)
-    :app-hash (byte-array 3)
+    ;; :validators (22 33 44)
+    ;; :app-hash (byte-array 3)
   }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -85,16 +88,17 @@
 ;; Return information about the application state.
 ;; Used to sync Tendermint with the application during a handshake that happens on startup.
 ;; The returned app_version will be included in the Header of every block.
-;; Tendermint expects last_block_app_hash and last_block_height to be updated during Commit, ensuring that Commit is never called twice for the same block height.
+;; Tendermint expects last_block_app_hash and last_block_height to be updated during Commit, 
+;; ensuring that Commit is never called twice for the same block height.
 ;;
 (defn info 
   [request-info]
   (ring-resp/response {
-    :data "data"
+    ;; :data "data"
     :version "xxx--version"
     :app-version 3
-    :last-block-height 7
-    :last-block-app-hash (byte-array 11)
+    :last-block-height 1
+    :last-block-app-hash (ledger/get-hash)
   }))
     
 ;;
