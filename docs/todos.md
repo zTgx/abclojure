@@ -1,3 +1,4 @@
+- [ ] 11. abci service cannot close rightly
 - [ ] 10. fix Makefile
 - [ ] 9. more clojureize
 - [ ] 8. add test case (framwork) ?

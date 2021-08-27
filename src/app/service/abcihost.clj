@@ -97,8 +97,8 @@
     ;; :data "data"
     :version "xxx--version"
     :app-version 3
-    :last-block-height 1
-    :last-block-app-hash (ledger/get-hash)
+    :last-block-height 0
+    :last-block-app-hash (byte-array 1)
   }))
     
 ;;
