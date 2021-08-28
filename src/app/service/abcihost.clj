@@ -24,7 +24,8 @@
             ;; [com.example.addressbook :as addressbook]
             [tendermint.abci.ABCIApplication.server :as server]
             [tendermint.abci :as abci]
-            
+            [tendermint.crypto :as abcicrypto]
+
             [ledger.ledger :as ledger]
             ))
 
@@ -63,11 +64,16 @@
 ;;
 (defn init-chain
   [request-init-chain]
-  (ring-resp/response {
+  ;; (ring-resp/response {
     ;; :consensus-params
     ;; :validators (22 33 44)
     ;; :app-hash (byte-array 3)
-  }))
+  ;; })
+  (abci/new-ResponseInitChain {
+    :validators []
+    :app-hash (byte-array 3)
+  })
+  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; echo - info - query
@@ -93,10 +99,15 @@
 ;;
 (defn info 
   [request-info]
-  (ring-resp/response {
-    ;; :data "data"
-    :version "xxx--version"
-    :app-version 3
+  ;; (ring-resp/response {
+  ;;   ;; :data "data"
+  ;;   :version "xxx--version"
+  ;;   :app-version 3
+  ;;   :last-block-height 0
+  ;;   :last-block-app-hash (byte-array 1)
+  ;; })
+  (abci/new-ResponseInfo {
+    :app-version 0
     :last-block-height 0
     :last-block-app-hash (byte-array 1)
   }))
@@ -109,11 +120,8 @@
 ;; Merkle proof includes self-describing type field to support many types of Merkle trees and encoding formats.
 ;;
 (defn query 
-  []
-  (ring-resp/response {
-    :code 200
-    :info "query info"
-  }))
+  [request]
+  (abci/ResponseQuery-defaults))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; check tx -> mempool
@@ -128,11 +136,12 @@
 ;; Tendermint attributes no other value to the response code
 ;;
 (defn check-tx 
-  []
+  [request]
+  (println (:tx request))
+  (println (:type request))
   (ring-resp/response {
-    :code 200
-    :data (byte-array 33)
-    :log "check-tx log"
+    :code 0
+    :gas-wanted 1
   }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -143,21 +152,18 @@
 ;;
 ;; Signals the beginning of a new block. Called prior to any DeliverTxs.
 ;; The header contains the height, timestamp, and more - it exactly matches the Tendermint block header. We may seek to generalize this in the future.
-;; The LastCommitInfo and ByzantineValidators can be used to determine rewards and punishments for the validators. NOTE validators here do not include pubkeys.
+;; The LastCommitInfo and ByzantineValidators can be used to determine rewards and punishments for the validators. 
+;; NOTE validators here do not include pubkeys.
 ;;
 (defn begin-block
   [request-begin-block]
   ;; (println (str "begin block : " (apply str (map char (:hash request-begin-block)))))
   (println (str "last-commit-info : " (:last-commit-info request-begin-block)))
-  (ring-resp/response {
-    :events {
-      :type "begin-block-type"
-      :attributes {
-        :key "begin-block-key"
-        :value "begin-block-value"
-        :index false
-      }
-    } 
+  (abci/new-RequestBeginBlock {
+    :event (abci/new-Event {
+      :type "begin-block-evnet-type"
+      :attributes []
+    })
   }))
 
 ;;
@@ -168,10 +174,11 @@
 ;; ResponseDeliverTx.Code == 0 only if the transaction is fully valid.
 ;;
 (defn deliver-tx 
-  []
+  [request]
+  (println (str "deliver tx : " {:tx request}))
   (ring-resp/response {
-    :code 200
-    :info "deliver tx info"
+    :code 0
+    ;; :info "deliver tx info"
   }))
 
 ;;  Usage:
@@ -185,12 +192,21 @@
 ;;  Consensus params returned for block H apply for block H+1
 ;;
 (defn end-block
-  []
-  (ring-resp/response {
-    ;; :validator-updates 
-    ;; :consensus-param-updates
-    ;; :events 
-  }))
+  [request]
+  (println (str "end block : " {:height request}))
+  (abci/new-ResponseEndBlock {
+    :validator_updates (abci/new-ValidatorUpdate {
+      :power 2
+      :pub-key (abcicrypto/new-PublicKey {
+        :sum 1
+      })
+    })
+    :events (abci/new-Event {
+      :type "validator.provisions"
+      :attributes []
+    })
+  })
+  )
 
 ;;
 ;;  Usage:
@@ -204,11 +220,9 @@
 ;;  Use RetainHeight with caution! If all nodes in the network remove historical blocks then this data is permanently lost, and no new nodes will be able to join the network and bootstrap. Historical blocks may also be required for other purposes, e.g. auditing, replay of non-persisted heights, light client verification, and so on.
 ;;
 (defn commit 
-  []
-  (ring-resp/response {
-    :retain-height 3
-    :data (byte-array 3)
-  }))
+  [request]
+  (println "commit ...")
+  (abci/new-ResponseCommit "commit"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; snapshot
