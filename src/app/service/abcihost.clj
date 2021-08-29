@@ -108,7 +108,7 @@
   ;; })
   (abci/new-ResponseInfo {
     :app-version 0
-    :last-block-height 0
+    :last-block-height 1
     :last-block-app-hash (byte-array 1)
   }))
     
@@ -201,10 +201,15 @@
         :sum 1
       })
     })
-    :events (abci/new-Event {
-      :type "validator.provisions"
-      :attributes []
-    })
+    :events []
+    ;; :events (abci/new-Event {
+    ;;   :type "begin-block-evnet-type"
+    ;;   :attributes (abci/new-EventAttribute {
+    ;;     :key "end.key"
+    ;;     :value "end.value"
+    ;;     :index false
+    ;;   })
+    ;; })
   })
   )
 
@@ -222,7 +227,10 @@
 (defn commit 
   [request]
   (println "commit ...")
-  (abci/new-ResponseCommit "commit"))
+  (abci/new-ResponseCommit {
+    ;; :data
+    ;; :retain-height 1
+  }))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; snapshot
