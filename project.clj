@@ -37,6 +37,9 @@
                  [org.clojure/core.async "1.3.618"]
                 ;; parse command line options
                 [org.clojure/tools.cli "1.0.206"]
+
+                ;;toml parser
+                [org.apache.tuweni/toml "1.3.0"]
                 ]
   :min-lein-version "2.0.0"
   :resource-paths ["config", "resources"]

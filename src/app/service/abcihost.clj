@@ -26,7 +26,7 @@
             [tendermint.abci :as abci]
             [tendermint.crypto :as abcicrypto]
 
-            [ledger.ledger :as ledger]
+            [ledger.state.state :as state]
             ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -108,7 +108,7 @@
   ;; })
   (abci/new-ResponseInfo {
     :app-version 0
-    :last-block-height 1
+    :last-block-height 0
     :last-block-app-hash (byte-array 1)
   }))
     

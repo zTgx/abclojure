@@ -1,0 +1,17 @@
+# This is abclojure configure document
+
+title = "Abclojure config"
+
+[abclojure]
+config = "./tendermint/config/config.toml"
+ledger-dir = "./abclojure"
+
+[tendermint]
+base-dir = "./tendermint"
+tendermint-host = "0.0.0.0"
+tendermint-node-key-config-path = "./tendermint/config/priv_validator_key.json"
+
+[logs]
+enable-ledger-service = false
+enable-query-service = true
+log-path = "./abclojure.log"
