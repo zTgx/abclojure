@@ -2,11 +2,11 @@
 - [ ] 10. fix Makefile
 - [ ] 9. more clojureize
 - [ ] 8. add test case (framwork) ?
-- [ ] 7. complete [abcihost] echo/info/.. callbacks.
+- [x] 7. complete [abcihost] echo/info/.. callbacks.
 - [ ] 6. design query server apis
 - [ ] 5. design comand line tools
 - [ ] 4. daemon process???
 - [ ] 3. write introduction 
-- [ ] 2. write how-to 
-- [ ] 1. re-rewrite READEME.md
+- [x] 2. write how-to 
+- [x] 1. re-rewrite READEME.md
 - [ ] 0. add license MIT
