@@ -6,15 +6,21 @@
             ;; [app.service.abcihost :as abcihost] ;; abci host server
             ;; [app.service.query :as query] ;; ledger query server
             ;; [clojure.core.async :as async]
-            [taoensso.timbre :as log]
-            [taoensso.timbre.appenders.core :as appenders]
-            [clojure.tools.cli :refer [parse-opts]]
-            [cmd.abc :as abc]
-            [app.service.manager :as manager]))
 
-(log/set-config! {:level :debug
-                  :ns-whitelist  ["app.*"]
-                  :appenders {:println (appenders/println-appender {:stream :auto})}})
+            ;; [taoensso.timbre :as log]
+            ;; [taoensso.timbre.appenders.core :as appenders]
+            ;; [clojure.tools.cli :refer [parse-opts]]
+            ;; [cmd.abc :as abc]
+            [app.service.manager :as manager]
+            [app.service.initconfig :as init-config]
+            ))
+
+;; (log/set-config! {:level :debug
+;;                   ;; :ns-whitelist  ["*.clj"]
+;;                   :ns-whitelist  ["app.*"]
+;;                   :appenders {:println (appenders/println-appender {:stream :auto})}
+;;                   }
+;;                   )
 
 ;; This is an adapted service map, that can be started and stopped
 ;; From the REPL you can call server/start and server/stop on this service
@@ -47,9 +53,10 @@
   "The entry-point for 'lein run'"
   [& args]
   (println "\nCreating your server...")
-  (parse-opts args abc/abc-options)
+  ;; (parse-opts args abc/abc-options)
   ;; (async/go (server/start runnable-service-query))
   ;; (server/start runnable-service-abcihost))
+  (init-config/init args))
   (manager/start args)
 ;; If you package the service up as a WAR,
 ;; some form of the following function sections is required (for io.pedestal.servlet.ClojureVarServlet).

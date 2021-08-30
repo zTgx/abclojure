@@ -5,7 +5,8 @@
             [app.service.query :as query]
             [app.service.submit :as submit]
             [app.service.pubsub :as pubsub]
-            [app.service.init :as init]))
+            [io.pedestal.log :as log]
+            ))
 
 (defonce run-service-abcihost
   (-> abcihost/service ;; start with production configuration
@@ -81,9 +82,7 @@
 
 (defn start 
   [& args]
-  (println "\nCreating your server...")
-  (init/init args)
-
+  (log/info :msg "\nCreating your server...")
   (run-service-abcihost args)
   (run-service-query args)
   (run-service-pubsub args)
